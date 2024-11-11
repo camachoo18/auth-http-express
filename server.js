@@ -44,9 +44,19 @@ app.get('/protected', authMiddleware, (req, res) => {
 });
 
 app.get('/logout', (req, res) => {
-  //res.setHeader('WWW-Authenticate', `Basic realm="${realm}"`);
+  res.setHeader('WWW-Authenticate', `Basic realm="${realm}"`);
   res.status(401).send('Has sido deslogueado');
 });
+
+app.get('/mensajito', authMiddleware, (req, res) => {
+  const authHeader = req.headers['authorization'];
+  const base64Credentials = authHeader.split(' ')[1];
+  const credentials = Buffer.from(base64Credentials, 'base64').toString('ascii');
+  const [username] = credentials.split(':');
+  
+  res.send(`¡Hola ${username}! Tengo examen luego y se puede liar.`);
+});
+
 
 // Ruta sin protección para pruebas
 app.get('/', (req, res) => {
